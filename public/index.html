@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOOD AI SENSITIVITY</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#090014,#19002f,#4b0082);
+  color:white;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:500px;
+  margin:auto;
+}
+
+.header{
+  text-align:center;
+  margin:15px 0 20px;
+}
+
+.header h1{
+  font-size:27px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.header p{
+  color:#c9b8df;
+  margin-top:6px;
+  font-size:13px;
+}
+
+.card{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:15px;
+  backdrop-filter:blur(10px);
+}
+
+.title{
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.device{
+  background:#12051f;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:14px;
+}
+
+.device b{
+  display:block;
+  font-size:16px;
+  margin-bottom:5px;
+}
+
+.device span{
+  color:#bca8d0;
+  font-size:12px;
+}
+
+.weapons{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.weapon{
+  border:1px solid #633b83;
+  background:#160522;
+  color:white;
+  padding:13px 8px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.weapon.active{
+  background:#7b2cff;
+  border-color:#b57aff;
+}
+
+.generate{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:16px;
+  background:linear-gradient(90deg,#7b2cff,#b000ff);
+  color:white;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.generate:active{
+  transform:scale(.98);
+}
+
+.results{
+  display:none;
+}
+
+.result{
+  background:#11031d;
+  border:1px solid #55306e;
+  border-radius:14px;
+  padding:13px;
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.result div:first-child{
+  color:#c9b8df;
+  font-size:13px;
+}
+
+.value{
+  font-size:23px;
+  font-weight:900;
+  color:#fff;
+}
+
+.copy{
+  background:#271037;
+  color:white;
+  border:1px solid #623a78;
+  border-radius:8px;
+  padding:7px 10px;
+  cursor:pointer;
+  font-size:11px;
+}
+
+.lock{
+  position:fixed;
+  inset:0;
+  background:rgba(4,0,8,.94);
+  z-index:99;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.lock-box{
+  width:100%;
+  max-width:420px;
+  background:#15051f;
+  border:1px solid #7138a0;
+  border-radius:22px;
+  padding:25px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(137,0,255,.25);
+}
+
+.lock-box h2{
+  font-size:22px;
+  margin-bottom:8px;
+}
+
+.lock-box p{
+  color:#c8b6d3;
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:18px;
+}
+
+.lock-btn{
+  width:100%;
+  padding:14px;
+  margin-top:9px;
+  border:0;
+  border-radius:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.follow{
+  background:#ff0050;
+  color:white;
+}
+
+.login{
+  background:#7b2cff;
+  color:white;
+}
+
+.verify{
+  background:#24102f;
+  color:white;
+  border:1px solid #71438d;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.status{
+  margin-top:12px;
+  font-size:12px;
+  color:#bfa9ce;
+}
+
+.footer{
+  text-align:center;
+  color:#88749a;
+  font-size:11px;
+  margin:20px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>MOOD AI SENSITIVITY</h1>
+    <p>Device-optimized Free Fire sensitivity</p>
+  </div>
+
+  <div class="card">
+
+    <div class="title">YOUR DEVICE</div>
+
+    <div class="device">
+      <b id="deviceName">Detecting device...</b>
+      <span id="deviceInfo">Optimizing sensitivity...</span>
+    </div>
+
+    <div class="title">SELECT GUN</div>
+
+    <div class="weapons">
+      <button class="weapon active" data-gun="UMP">UMP</button>
+      <button class="weapon" data-gun="DESERT EAGLE">DESERT EAGLE</button>
+      <button class="weapon" data-gun="SHOTGUN">SHOTGUN</button>
+      <button class="weapon" data-gun="SMG">SMG</button>
+      <button class="weapon" data-gun="AR">AR</button>
+      <button class="weapon" data-gun="MARKSMAN">MARKSMAN</button>
+    </div>
+
+    <button class="generate" id="generate">
+      GENERATE BEST SENSITIVITY
+    </button>
+
+  </div>
+
+  <div class="card results" id="results">
+
+    <div class="title">
+      BEST SETTINGS FOR <span id="gunName">UMP</span>
+    </div>
+
+    <div class="result">
+      <div>General</div>
+      <div class="value" id="general">--</div>
+      <button class="copy" data-copy="general">COPY</button>
+    </div>
+
+    <div class="result">
+      <div>Red Dot</div>
+      <div class="value" id="redDot">--</div>
+      <button class="copy" data-copy="redDot">COPY</button>
+    </div>
+
+    <div class="result">
+      <div>2x Scope</div>
+      <div class="value" id="scope2x">--</div>
+      <button class="copy" data-copy="scope2x">COPY</button>
+    </div>
+
+    <div class="result">
+      <div>4x Scope</div>
+      <div class="value" id="scope4x">--</div>
+      <button class="copy" data-copy="scope4x">COPY</button>
+    </div>
+
+    <div class="result">
+      <div>Sniper Scope</div>
+      <div class="value" id="sniper">--</div>
+      <button class="copy" data-copy="sniper">COPY</button>
+    </div>
+
+    <div class="result">
+      <div>Free Look</div>
+      <div class="value" id="freeLook">--</div>
+      <button class="copy" data-copy="freeLook">COPY</button>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    MOOD AI • Device optimized • High sensitivity
+  </div>
+
+</div>
+
+<!-- TIKTOK FOLLOW / LOGIN GATE -->
+<div class="lock" id="lock">
+
+  <div class="lock-box">
+
+    <h2>🔒 ACCESS LOCKED</h2>
+
+    <p>
+      Follow <b>@mood5ff</b> on TikTok and connect your TikTok account
+      to verify access.
+    </p>
+
+    <button class="lock-btn follow" id="followBtn">
+      FOLLOW @MOOD5FF
+    </button>
+
+    <button class="lock-btn login" id="loginBtn">
+      CONTINUE WITH TIKTOK
+    </button>
+
+    <button class="lock-btn verify" id="verifyBtn">
+      VERIFY MY FOLLOW
+    </button>
+
+    <div class="status" id="status">
+      Waiting for verification...
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+/* ==============================
+   DEVICE DETECTION
+============================== */
+
+function detectDevice(){
+
+  const ua = navigator.userAgent.toLowerCase();
+
+  let brand = "Android Device";
+
+  if(ua.includes("tecno")) brand = "TECNO";
+  else if(ua.includes("infinix")) brand = "INFINIX";
+  else if(ua.includes("samsung")) brand = "SAMSUNG";
+  else if(ua.includes("xiaomi") || ua.includes("redmi") || ua.includes("poco"))
+    brand = "XIAOMI / REDMI / POCO";
+  else if(ua.includes("oppo")) brand = "OPPO";
+  else if(ua.includes("vivo")) brand = "VIVO";
+  else if(ua.includes("oneplus")) brand = "ONEPLUS";
+  else if(ua.includes("iphone")) brand = "IPHONE";
+  else if(ua.includes("ipad")) brand = "IPAD";
+
+  const cores = navigator.hardwareConcurrency || 4;
+  const ram = navigator.deviceMemory || 4;
+  const dpr = window.devicePixelRatio || 1;
+
+  let className = "MID DEVICE";
+
+  if(
+    ua.includes("iphone") ||
+    ua.includes("ipad") ||
+    cores >= 8 ||
+    ram >= 8
+  ){
+    className = "HIGH PERFORMANCE";
+  }
+
+  if(cores <= 4 && ram <= 4){
+    className = "ENTRY / MID DEVICE";
+  }
+
+  document.getElementById("deviceName").textContent = brand;
+  document.getElementById("deviceInfo").textContent =
+    className + " • " + cores + " CPU CORES • " + ram + "GB RAM • DPR " + dpr.toFixed(1);
+
+  return {
+    brand,
+    cores,
+    ram,
+    dpr
+  };
+}
+
+const device = detectDevice();
+
+
+/* ==============================
+   SENSITIVITY ENGINE
+   NOT RANDOM
+============================== */
+
+const profiles = {
+
+  UMP:{
+    General:190,
+    RedDot:186,
+    Scope2x:178,
+    Scope4x:160,
+    Sniper:110,
+    FreeLook:180
+  },
+
+  "DESERT EAGLE":{
+    General:188,
+    RedDot:184,
+    Scope2x:174,
+    Scope4x:158,
+    Sniper:108,
+    FreeLook:178
+  },
+
+  SHOTGUN:{
+    General:200,
+    RedDot:192,
+    Scope2x:180,
+    Scope4x:155,
+    Sniper:105,
+    FreeLook:185
+  },
+
+  SMG:{
+    General:194,
+    RedDot:188,
+    Scope2x:178,
+    Scope4x:160,
+    Sniper:108,
+    FreeLook:182
+  },
+
+  AR:{
+    General:182,
+    RedDot:176,
+    Scope2x:170,
+    Scope4x:154,
+    Sniper:110,
+    FreeLook:175
+  },
+
+  MARKSMAN:{
+    General:176,
+    RedDot:170,
+    Scope2x:164,
+    Scope4x:150,
+    Sniper:115,
+    FreeLook:170
+  }
+
+};
+
+
+/*
+  Device adjustment is deterministic.
+
+  Higher-performance devices can handle
+  faster touch movement.
+
+  Lower-performance devices get slightly
+  reduced values for control.
+*/
+
+function getDeviceAdjustment(){
+
+  let adjustment = 0;
+
+  if(device.cores >= 8) adjustment += 3;
+  else if(device.cores <= 4) adjustment -= 3;
+
+  if(device.ram >= 8) adjustment += 2;
+  else if(device.ram <= 3) adjustment -= 2;
+
+  if(device.dpr >= 3) adjustment += 1;
+
+  return adjustment;
+}
+
+
+function clamp(value,min=0,max=200){
+  return Math.max(min,Math.min(max,Math.round(value)));
+}
+
+
+function generateSensitivity(gun){
+
+  const base = profiles[gun];
+  const adj = getDeviceAdjustment();
+
+  /*
+    Small fixed gun-specific tuning.
+    No Math.random() is used.
+  */
+
+  let values = {
+    General:base.General + adj,
+    RedDot:base.RedDot + adj,
+    Scope2x:base.Scope2x + adj,
+    Scope4x:base.Scope4x + adj,
+    Sniper:base.Sniper + Math.round(adj/2),
+    FreeLook:base.FreeLook + adj
+  };
+
+  if(gun === "UMP"){
+    values.General += 2;
+    values.RedDot += 2;
+  }
+
+  if(gun === "DESERT EAGLE"){
+    values.General += 1;
+    values.RedDot += 3;
+  }
+
+  if(gun === "SHOTGUN"){
+    values.General += 4;
+    values.RedDot += 3;
+  }
+
+  if(gun === "SMG"){
+    values.General += 2;
+    values.RedDot += 2;
+  }
+
+  if(gun === "MARKSMAN"){
+    values.Scope4x += 2;
+    values.Sniper += 2;
+  }
+
+  Object.keys(values).forEach(key=>{
+    values[key] = clamp(values[key],50,200);
+  });
+
+  return values;
+}
+
+
+/* ==============================
+   GUN SELECTION
+============================== */
+
+let selectedGun = "UMP";
+
+document.querySelectorAll(".weapon").forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+    document.querySelectorAll(".weapon")
+      .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    selectedGun = button.dataset.gun;
+
+  });
+
+});
+
+
+/* ==============================
+   GENERATE
+============================== */
+
+document.getElementById("generate").addEventListener("click",async()=>{
+
+  const access = await fetch("/api/access",{
+    credentials:"include"
+  });
+
+  const data = await access.json();
+
+  if(!data.allowed){
+
+    document.getElementById("lock").classList.remove("hidden");
+
+    document.getElementById("status").textContent =
+      data.message || "Please verify your TikTok follow.";
+
+    return;
+  }
+
+  const values = generateSensitivity(selectedGun);
+
+  document.getElementById("gunName").textContent = selectedGun;
+
+  document.getElementById("general").textContent = values.General;
+  document.getElementById("redDot").textContent = values.RedDot;
+  document.getElementById("scope2x").textContent = values.Scope2x;
+  document.getElementById("scope4x").textContent = values.Scope4x;
+  document.getElementById("sniper").textContent = values.Sniper;
+  document.getElementById("freeLook").textContent = values.FreeLook;
+
+  document.getElementById("results").style.display = "block";
+
+  window.scrollTo({
+    top:document.body.scrollHeight,
+    behavior:"smooth"
+  });
+
+});
+
+
+/* ==============================
+   COPY BUTTONS
+============================== */
+
+document.querySelectorAll(".copy").forEach(button=>{
+
+  button.addEventListener("click",async()=>{
+
+    const id = button.dataset.copy;
+    const value = document.getElementById(id).textContent;
+
+    try{
+      await navigator.clipboard.writeText(value);
+      button.textContent = "COPIED";
+
+      setTimeout(()=>{
+        button.textContent = "COPY";
+      },1200);
+
+    }catch(e){
+      alert("Copy failed");
+    }
+
+  });
+
+});
+
+
+/* ==============================
+   TIKTOK FOLLOW GATE
+============================== */
+
+const lock = document.getElementById("lock");
+const followBtn = document.getElementById("followBtn");
+const loginBtn = document.getElementById("loginBtn");
+const verifyBtn = document.getElementById("verifyBtn");
+const status = document.getElementById("status");
+
+
+followBtn.addEventListener("click",()=>{
+
+  window.open(
+    "https://www.tiktok.com/@mood5ff",
+    "_blank"
+  );
+
+});
+
+
+loginBtn.addEventListener("click",()=>{
+
+  window.location.href = "/auth/tiktok";
+
+});
+
+
+verifyBtn.addEventListener("click",async()=>{
+
+  status.textContent = "Checking your TikTok account...";
+
+  try{
+
+    const response = await fetch("/api/check-follow",{
+      credentials:"include"
+    });
+
+    const data = await response.json();
+
+    if(data.loggedIn && data.following){
+
+      status.textContent = "✅ Follow verified! Access unlocked.";
+
+      setTimeout(()=>{
+        lock.classList.add("hidden");
+      },700);
+
+    }else if(!data.loggedIn){
+
+      status.textContent =
+        "Please connect your TikTok account first.";
+
+    }else{
+
+      status.textContent =
+        "❌ Follow not verified yet.";
+
+    }
+
+  }catch(error){
+
+    status.textContent =
+      "Verification error. Check your server.";
+
+  }
+
+});
+
+
+/* ==============================
+   CHECK LOGIN STATUS
+============================== */
+
+async function checkAuth(){
+
+  try{
+
+    const response = await fetch("/api/auth-status",{
+      credentials:"include"
+    });
+
+    const data = await response.json();
+
+    if(data.loggedIn && data.following){
+
+      lock.classList.add("hidden");
+
+    }else{
+
+      lock.classList.remove("hidden");
+
+    }
+
+  }catch(error){
+
+    lock.classList.remove("hidden");
+
+  }
+
+}
+
+checkAuth();
+
+
+/*
+  Re-check periodically so access can be
+  removed if verification is no longer valid.
+*/
+
+setInterval(checkAuth,30000);
+
+</script>
+
+</body>
+</html>
