@@ -400,7 +400,7 @@ const alternateProfiles={
 
 let generationMode=0;
 
-function generateNumbers(){
+function generateNumbers(mode=0){
 
   const device=analyzeDevice();
 
@@ -462,9 +462,9 @@ function generateNumbers(){
   };
 }
 
-function renderResult(){
+function renderResult(mode=0){
 
-  const generated=generateNumbers();
+  const generated=generateNumbers(mode);
 
   const output=document.getElementById("results");
   const info=document.getElementById("profileInfo");
