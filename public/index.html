@@ -1,581 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <meta name="theme-color" content="#08090d">
-<title>MOOD AI SENSITIVITY</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-}
-
-body{
-  min-height:100vh;
-  background:
-    radial-gradient(circle at top,#30204c,#0b0b10 55%,#050507);
-  color:#fff;
-}
-
-.container{
-  width:min(94%,500px);
-  margin:auto;
-  padding:22px 0 45px;
-}
-
-.header{
-  text-align:center;
-  padding:15px 5px 25px;
-}
-
-.logo,.lockLogo{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  background:linear-gradient(135deg,#a855f7,#6366f1);
-  box-shadow:0 0 35px rgba(139,92,246,.4);
-}
-
-.logo{
-  width:68px;
-  height:68px;
-  margin:auto;
-  border-radius:21px;
-  font-size:29px;
-}
-
-.header h1{
-  margin-top:15px;
-  font-size:27px;
-}
-
-.header p{
-  margin-top:7px;
-  color:#a9a9b7;
-  font-size:13px;
-}
-
-.card{
-  background:rgba(18,19,27,.92);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:24px;
-  padding:20px;
-  margin-bottom:15px;
-  box-shadow:0 15px 50px rgba(0,0,0,.25);
-}
-
-.title{
-  font-size:15px;
-  font-weight:900;
-  margin-bottom:14px;
-}
-
-label{
-  display:block;
-  color:#9e9eac;
-  font-size:12px;
-  margin:13px 0 7px;
-}
-
-input,select{
-  width:100%;
-  border:1px solid #292b38;
-  outline:none;
-  border-radius:14px;
-  background:#101119;
-  color:#fff;
-  padding:14px;
-  font-size:14px;
-}
-
-input:focus,select:focus{
-  border-color:#8b5cf6;
-  box-shadow:0 0 0 2px rgba(139,92,246,.12);
-}
-
-.detected{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:13px;
-  border-radius:14px;
-  background:#101119;
-  border:1px solid #292b38;
-  margin-top:10px;
-}
-
-.detected span:first-child{
-  color:#9e9eac;
-  font-size:12px;
-}
-
-.detected span:last-child{
-  font-size:13px;
-  font-weight:bold;
-  text-align:right;
-  max-width:65%;
-}
-
-button{
-  width:100%;
-  padding:15px;
-  border:0;
-  border-radius:15px;
-  font-weight:900;
-  cursor:pointer;
-}
-
-button:active{
-  transform:scale(.98);
-}
-
-.generate{
-  margin-top:15px;
-  color:#fff;
-  background:linear-gradient(135deg,#9333ea,#6366f1);
-}
-
-.regenerate{
-  margin-top:10px;
-  color:#fff;
-  background:#252631;
-}
-
-.tiktok{
-  color:#fff;
-  background:linear-gradient(135deg,#ff0050,#7c3aed);
-}
-
-.logout{
-  margin-top:10px;
-  background:#191a22;
-  color:#aaa;
-  font-size:11px;
-}
-
-.result{
-  display:none;
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 0;
-  border-bottom:1px solid #252631;
-}
-
-.row:last-child{
-  border-bottom:0;
-}
-
-.valueBox{
-  display:flex;
-  align-items:center;
-  gap:7px;
-}
-
-.value{
-  font-size:21px;
-  font-weight:900;
-  min-width:45px;
-  text-align:center;
-}
-
-.copy{
-  width:auto;
-  padding:7px 10px;
-  background:#252733;
-  color:#fff;
-  font-size:10px;
-}
-
-.profileInfo{
-  margin-bottom:8px;
-  padding:11px;
-  border-radius:13px;
-  background:#101119;
-  border:1px solid #292b38;
-  color:#aaa;
-  font-size:11px;
-  line-height:1.5;
-}
-
-.profileInfo b{
-  color:#fff;
-}
-
-.status{
-  display:none;
-  text-align:center;
-  color:#c4b5fd;
-  font-size:12px;
-  padding:11px;
-  margin-bottom:13px;
-  border-radius:13px;
-  background:rgba(139,92,246,.1);
-}
-
-.status.error{
-  color:#ff9db8;
-  background:rgba(255,0,80,.08);
-}
-
-.status.success{
-  color:#b8ffcf;
-  background:rgba(0,255,120,.08);
-}
-
-.weapon-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:9px;
-}
-
-.weapon{
-  padding:12px;
-  border:1px solid #292b38;
-  background:#101119;
-  border-radius:13px;
-  font-size:12px;
-  text-align:center;
-  color:#c8c8d3;
-}
-
-.weapon.active{
-  border-color:#8b5cf6;
-  color:#fff;
-  background:rgba(139,92,246,.1);
-}
-
-.footer{
-  text-align:center;
-  color:#686875;
-  font-size:10px;
-  padding:5px;
-}
-
-.lock{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  background:
-    radial-gradient(circle at top,#32154e,#0a0a0f 55%,#050507);
-}
-
-.lockBox{
-  width:min(94%,430px);
-  text-align:center;
-  padding:28px 21px;
-  border-radius:28px;
-  background:rgba(17,17,25,.97);
-  border:1px solid rgba(255,255,255,.09);
-  box-shadow:0 25px 80px rgba(0,0,0,.5);
-}
-
-.lockBox h2{
-  font-size:23px;
-  margin-bottom:9px;
-}
-
-.lockBox p{
-  color:#a7a7b4;
-  line-height:1.55;
-  font-size:13px;
-}
-
-.lockLogo{
-  width:70px;
-  height:70px;
-  margin:0 auto 18px;
-  border-radius:22px;
-  font-size:30px;
-}
-
-.timer{
-  margin-top:12px;
-  font-size:11px;
-  color:#777784;
-}
-
-.notice{
-  margin-top:14px;
-  font-size:10px;
-  line-height:1.5;
-  color:#686875;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.userBox{
-  display:none;
-  margin-top:12px;
-  padding:11px;
-  border-radius:13px;
-  background:#101119;
-  border:1px solid #292b38;
-  font-size:12px;
-  color:#aaa;
-}
-
-.userBox b{
-  color:#fff;
-}
-</style>
-</head>
-
-<body>
-
-<!-- TIKTOK ACCESS LOCK -->
-
-<div class="lock" id="lock">
+<title>MOOD AI SENSITIVITY</title><style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{min-height:100vh;background:radial-gradient(circle at top,#30204c,#0b0b10 55%,#050507);color:#fff}
+.container{width:min(94%,500px);margin:auto;padding:22px 0 45px}
+.header{text-align:center;padding:15px 5px 25px}
+.logo,.lockLogo{display:flex;align-items:center;justify-content:center;font-weight:900;background:linear-gradient(135deg,#a855f7,#6366f1);box-shadow:0 0 35px rgba(139,92,246,.4)}
+.logo{width:68px;height:68px;margin:auto;border-radius:21px;font-size:29px}
+.header h1{margin-top:15px;font-size:27px}
+.header p{margin-top:7px;color:#a9a9b7;font-size:13px}
+.card{background:rgba(18,19,27,.92);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:20px;margin-bottom:15px;box-shadow:0 15px 50px rgba(0,0,0,.25)}
+.title{font-size:15px;font-weight:900;margin-bottom:14px}
+label{display:block;color:#9e9eac;font-size:12px;margin:13px 0 7px}
+input,select{width:100%;border:1px solid #292b38;outline:none;border-radius:14px;background:#101119;color:#fff;padding:14px;font-size:14px}
+input:focus,select:focus{border-color:#8b5cf6;box-shadow:0 0 0 2px rgba(139,92,246,.12)}
+.detected{display:flex;justify-content:space-between;align-items:center;padding:13px;border-radius:14px;background:#101119;border:1px solid #292b38;margin-top:10px}
+.detected span:first-child{color:#9e9eac;font-size:12px}
+.detected span:last-child{font-size:13px;font-weight:bold;text-align:right;max-width:65%}
+button{width:100%;padding:15px;border:0;border-radius:15px;font-weight:900;cursor:pointer}
+button:active{transform:scale(.98)}
+.generate{margin-top:15px;color:#fff;background:linear-gradient(135deg,#9333ea,#6366f1)}
+.regenerate{margin-top:10px;color:#fff;background:#252631}
+.tiktok{color:#fff;background:linear-gradient(135deg,#ff0050,#7c3aed)}
+.result{display:none}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #252631}
+.row:last-child{border-bottom:0}
+.valueBox{display:flex;align-items:center;gap:7px}
+.value{font-size:21px;font-weight:900;min-width:45px;text-align:center}
+.copy{width:auto;padding:7px 10px;background:#252733;color:#fff;font-size:10px}
+.profileInfo{margin-bottom:8px;padding:11px;border-radius:13px;background:#101119;border:1px solid #292b38;color:#aaa;font-size:11px;line-height:1.5}
+.profileInfo b{color:#fff}
+.status{display:none;text-align:center;color:#c4b5fd;font-size:12px;padding:11px;margin-bottom:13px;border-radius:13px;background:rgba(139,92,246,.1)}
+.status.error{color:#ff9db8;background:rgba(255,0,80,.08)}
+.status.success{color:#b8ffcf;background:rgba(0,255,120,.08)}
+.weapon-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.weapon{padding:12px;border:1px solid #292b38;background:#101119;border-radius:13px;font-size:12px;text-align:center;color:#c8c8d3}
+.weapon.active{border-color:#8b5cf6;color:#fff;background:rgba(139,92,246,.1)}
+.footer{text-align:center;color:#686875;font-size:10px;padding:5px}
+.lock{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at top,#32154e,#0a0a0f 55%,#050507)}
+.lockBox{width:min(94%,430px);text-align:center;padding:28px 21px;border-radius:28px;background:rgba(17,17,25,.97);border:1px solid rgba(255,255,255,.09);box-shadow:0 25px 80px rgba(0,0,0,.5)}
+.lockBox h2{font-size:23px;margin-bottom:9px}
+.lockBox p{color:#a7a7b4;line-height:1.55;font-size:13px}
+.lockLogo{width:70px;height:70px;margin:0 auto 18px;border-radius:22px;font-size:30px}
+.timer{margin-top:12px;font-size:11px;color:#777784}
+.notice{margin-top:14px;font-size:10px;line-height:1.5;color:#686875}
+.hidden{display:none!important}
+.userBox{display:none;margin-top:12px;padding:11px;border-radius:13px;background:#101119;border:1px solid #292b38;font-size:12px;color:#aaa}
+.userBox b{color:#fff}
+</style></head><body><div class="lock" id="lock">
   <div class="lockBox">
-
     <div class="lockLogo">M</div>
+    <h2>MOOD AI SENSITIVITY</h2><p id="lockText">
+  Follow <b>@mood5ff</b> on TikTok, then connect your
+  TikTok account to access MOOD AI SENSITIVITY.
+</p>
 
-    <h2>MOOD AI SENSITIVITY</h2>
+<button class="tiktok" id="followBtn" type="button">
+  FOLLOW @MOOD5FF
+</button>
 
-    <p id="lockText">
-      Follow <b>@mood5ff</b> on TikTok, then connect your
-      TikTok account to access MOOD AI SENSITIVITY.
-    </p>
+<button class="regenerate" id="loginBtn" type="button">
+  CONTINUE WITH TIKTOK
+</button>
 
-    <button class="tiktok" id="followBtn" type="button">
-      FOLLOW @MOOD5FF
-    </button>
-
-    <button class="regenerate" id="loginBtn" type="button">
-      CONTINUE WITH TIKTOK
-    </button>
-
-    <div class="userBox" id="userBox">
-      Logged in as <b id="username">—</b>
-    </div>
-
-    <div class="timer" id="timer"></div>
-
-    <div class="notice">
-      TikTok Login Kit securely authenticates your account.
-      The website does not ask for your TikTok password.
-    </div>
-
-  </div>
+<div class="userBox" id="userBox">
+  Logged in as <b id="username">—</b>
 </div>
 
+<div class="timer" id="timer"></div>
 
-<!-- MAIN APP -->
+<div class="notice">
+  TikTok Login Kit securely authenticates your account.
+  The website does not ask for your TikTok password.
+</div>
 
-<main class="container">
-
-<header class="header">
+  </div>
+</div><main class="container"><header class="header">
   <div class="logo">M</div>
-
   <h1>MOOD AI SENSITIVITY</h1>
+  <p>High sensitivity • Device optimized • AI tuned</p>
+</header><div class="status" id="status"></div><section class="card">  <div class="title">DEVICE SETUP</div><label for="deviceNameInput">Type Your Exact Device</label>
 
-  <p>
-    High sensitivity • Device optimized • AI tuned
-  </p>
-</header>
+<input
+id="deviceNameInput"
+type="text"
+placeholder="Example: Tecno Spark 40 Pro+"
+autocomplete="off"
 
-<div class="status" id="status"></div>
+«»
 
-
-<!-- DEVICE -->
-
-<section class="card">
-
-  <div class="title">DEVICE SETUP</div>
-
-  <label for="deviceNameInput">
-    Type Your Exact Device
-  </label>
-
-  <input
-    id="deviceNameInput"
-    type="text"
-    placeholder="Example: Tecno Spark 40 Pro+"
-    autocomplete="off"
-  >
-
-  <label for="device">
-    Device Performance
-  </label>
+<label for="device">Device Performance</label>
 
   <select id="device">
-
-    <option value="auto">
-      Auto Detect
-    </option>
-
-    <option value="low">
-      Low-End Android
-    </option>
-
-    <option value="mid">
-      Mid-Range Android
-    </option>
-
-    <option value="high">
-      High-End Android
-    </option>
-
-    <option value="gaming">
-      Gaming Phone
-    </option>
-
-    <option value="iphone">
-      iPhone
-    </option>
-
-  </select>
-
-  <div class="detected">
+    <option value="auto">Auto Detect</option>
+    <option value="low">Low-End Android</option>
+    <option value="mid">Mid-Range Android</option>
+    <option value="high">High-End Android</option>
+    <option value="gaming">Gaming Phone</option>
+    <option value="iphone">iPhone</option>
+  </select>  <div class="detected">
     <span>Device</span>
     <span id="deviceName">Detecting...</span>
-  </div>
-
-  <div class="detected">
+  </div>  <div class="detected">
     <span>Screen / Touch</span>
     <span id="screenInfo">Detecting...</span>
-  </div>
-
-  <div class="detected">
+  </div>  <div class="detected">
     <span>Target</span>
     <span>HIGH SENSITIVITY</span>
-  </div>
-
-</section>
-
-
-<!-- WEAPONS -->
-
-<section class="card">
-
-  <div class="title">WEAPON OPTIMIZATION</div>
-
-  <div class="weapon-grid">
-
+  </div></section><section class="card">  <div class="title">WEAPON OPTIMIZATION</div>  <div class="weapon-grid">
     <div class="weapon active">UMP</div>
     <div class="weapon active">DESERT EAGLE</div>
     <div class="weapon active">SHOTGUN</div>
     <div class="weapon active">SMG</div>
     <div class="weapon active">AR</div>
     <div class="weapon active">MARKSMAN</div>
-
-  </div>
-
-</section>
-
-
-<!-- AI SETTINGS -->
-
-<section class="card">
-
-  <div class="title">AI SENSITIVITY</div>
-
-  <label for="style">
-    Play Style
-  </label>
+  </div></section><section class="card">  <div class="title">AI SENSITIVITY</div><label for="style">Play Style</label>
 
   <select id="style">
-
-    <option value="balanced">
-      Balanced Headshot
-    </option>
-
-    <option value="ump">
-      UMP Headshot
-    </option>
-
-    <option value="oneTap">
-      One-Tap
-    </option>
-
-    <option value="shotgun">
-      Shotgun Drag
-    </option>
-
-    <option value="drag">
-      Fast Drag
-    </option>
-
-  </select>
-
-  <button class="generate" id="generate" type="button">
+    <option value="balanced">Balanced Headshot</option>
+    <option value="ump">UMP Headshot</option>
+    <option value="oneTap">One-Tap</option>
+    <option value="shotgun">Shotgun Drag</option>
+    <option value="drag">Fast Drag</option>
+  </select>  <button class="generate" id="generate" type="button">
     GENERATE HIGH SENSITIVITY
-  </button>
-
-  <button class="regenerate" id="regenerate" type="button">
+  </button>  <button class="regenerate" id="regenerate" type="button">
     REGENERATE SENSITIVITY
-  </button>
-
-</section>
-
-
-<!-- RESULT -->
-
-<section class="card result" id="result">
-
-  <div class="title">
-    AI RESULT
-  </div>
-
-  <div class="profileInfo" id="profileInfo"></div>
-
-  <div id="results"></div>
-
-</section>
-
-
-<footer class="footer">
+  </button></section><section class="card result" id="result">  <div class="title">AI RESULT</div>  <div class="profileInfo" id="profileInfo"></div>  <div id="results"></div></section><footer class="footer">
   MOOD AI SENSITIVITY • @mood5ff
-</footer>
-
-</main>
-
-
-<script>
+</footer></main><script>
 "use strict";
 
-/* =====================================================
-   TIKTOK
-===================================================== */
+const TIKTOK_URL="https://www.tiktok.com/@mood5ff";
 
-const TIKTOK_URL =
-"https://www.tiktok.com/@mood5ff";
-
-const lock =
-document.getElementById("lock");
-
-const followBtn =
-document.getElementById("followBtn");
-
-const loginBtn =
-document.getElementById("loginBtn");
-
-const timer =
-document.getElementById("timer");
-
-const userBox =
-document.getElementById("userBox");
-
-const usernameEl =
-document.getElementById("username");
-
-const statusEl =
-document.getElementById("status");
-
+const lock=document.getElementById("lock");
+const followBtn=document.getElementById("followBtn");
+const loginBtn=document.getElementById("loginBtn");
+const timer=document.getElementById("timer");
+const userBox=document.getElementById("userBox");
+const usernameEl=document.getElementById("username");
+const statusEl=document.getElementById("status");
 
 function showStatus(message,type=""){
   statusEl.style.display="block";
@@ -583,385 +150,270 @@ function showStatus(message,type=""){
   statusEl.className="status "+type;
 }
 
-
-/* =====================================================
-   FOLLOW BUTTON
-===================================================== */
-
 followBtn.onclick=function(){
-
   window.open(TIKTOK_URL,"_blank");
-
-  timer.textContent =
-    "After following @mood5ff, return here and tap CONTINUE WITH TIKTOK.";
+  timer.textContent="After following @mood5ff, return here and tap CONTINUE WITH TIKTOK.";
 };
 
-
-/* =====================================================
-   TIKTOK LOGIN
-===================================================== */
-
 loginBtn.onclick=function(){
-
   timer.textContent="Opening secure TikTok authentication...";
-
   window.location.href="/auth/tiktok";
 };
 
-
-/* =====================================================
-   LOCK / UNLOCK
-===================================================== */
-
 function lockApp(){
-
   lock.classList.remove("hidden");
-
   userBox.style.display="none";
-
   usernameEl.textContent="—";
-
   loginBtn.disabled=false;
-
   loginBtn.textContent="CONTINUE WITH TIKTOK";
 }
 
-
 function unlockApp(username){
-
   lock.classList.add("hidden");
-
   userBox.style.display="block";
-
-  usernameEl.textContent="@"+(
-    username || "TikTok user"
-  );
+  usernameEl.textContent="@"+(username||"TikTok user");
 }
 
-
-/* =====================================================
-   AUTH CHECK
-===================================================== */
-
 async function checkAuth(){
-
   try{
+    const response=await fetch("/api/auth-status",{
+      credentials:"same-origin",
+      cache:"no-store"
+    });
 
-    const response =
-      await fetch(
-        "/api/auth-status",
-        {
-          credentials:"same-origin",
-          cache:"no-store"
-        }
-      );
+    if(!response.ok) throw new Error("Authentication server error.");
 
-    if(!response.ok){
-      throw new Error("Authentication server error.");
-    }
+    const data=await response.json();
 
-    const data =
-      await response.json();
-
-    if(
-      data.loggedIn === true ||
-      data.authenticated === true
-    ){
-
-      unlockApp(
-        data.displayName ||
-        data.username ||
-        "TikTok user"
-      );
-
+    if(data.loggedIn===true||data.authenticated===true){
+      unlockApp(data.displayName||data.username||"TikTok user");
       return true;
     }
 
     lockApp();
-
     return false;
 
   }catch(error){
-
-    console.error(
-      "AUTH STATUS ERROR:",
-      error
-    );
-
+    console.error("AUTH STATUS ERROR:",error);
     lockApp();
-
-    timer.textContent =
-      "Could not check TikTok login status.";
-
+    timer.textContent="Could not check TikTok login status.";
     return false;
   }
 }
 
-
-/* =====================================================
-   DEVICE DETECTION
-===================================================== */
-
 function detectDeviceName(){
 
-  const ua =
-    navigator.userAgent || "";
+  const ua=navigator.userAgent||"";
 
-  if(/TECNO/i.test(ua))
-    return "TECNO Android";
-
-  if(/Infinix/i.test(ua))
-    return "Infinix Android";
-
-  if(/Samsung/i.test(ua))
-    return "Samsung Galaxy";
-
-  if(/Redmi|Xiaomi|POCO/i.test(ua))
-    return "Xiaomi / Redmi / POCO";
-
-  if(/OPPO/i.test(ua))
-    return "OPPO Android";
-
-  if(/vivo/i.test(ua))
-    return "vivo Android";
-
-  if(/OnePlus/i.test(ua))
-    return "OnePlus Android";
-
-  if(/Realme/i.test(ua))
-    return "Realme Android";
-
-  if(/Huawei/i.test(ua))
-    return "Huawei Android";
-
-  if(/iPhone/i.test(ua))
-    return "Apple iPhone";
-
-  if(/iPad/i.test(ua))
-    return "Apple iPad";
-
-  if(/Android/i.test(ua))
-    return "Android Device";
+  if(/TECNO/i.test(ua))return "TECNO Android";
+  if(/Infinix/i.test(ua))return "Infinix Android";
+  if(/Samsung/i.test(ua))return "Samsung Galaxy";
+  if(/Redmi|Xiaomi|POCO/i.test(ua))return "Xiaomi / Redmi / POCO";
+  if(/OPPO/i.test(ua))return "OPPO Android";
+  if(/vivo/i.test(ua))return "vivo Android";
+  if(/OnePlus/i.test(ua))return "OnePlus Android";
+  if(/Realme/i.test(ua))return "Realme Android";
+  if(/Huawei/i.test(ua))return "Huawei Android";
+  if(/iPhone/i.test(ua))return "Apple iPhone";
+  if(/iPad/i.test(ua))return "Apple iPad";
+  if(/Android/i.test(ua))return "Android Device";
 
   return "Unknown Device";
 }
 
-
 function deviceClass(){
 
-  const cores =
-    navigator.hardwareConcurrency || 4;
+  const cores=navigator.hardwareConcurrency||4;
+  const ram=navigator.deviceMemory||4;
+  const ua=navigator.userAgent||"";
 
-  const ram =
-    navigator.deviceMemory || 4;
-
-  const ua =
-    navigator.userAgent || "";
-
-  if(/iPhone|iPad/i.test(ua))
-    return "iphone";
-
-  if(ram>=8 && cores>=8)
-    return "gaming";
-
-  if(ram>=6 && cores>=6)
-    return "high";
-
-  if(ram>=4 && cores>=4)
-    return "mid";
+  if(/iPhone|iPad/i.test(ua))return "iphone";
+  if(ram>=8&&cores>=8)return "gaming";
+  if(ram>=6&&cores>=6)return "high";
+  if(ram>=4&&cores>=4)return "mid";
 
   return "low";
 }
 
-
 function detectDevice(){
 
-  const input =
-    document.getElementById(
-      "deviceNameInput"
-    );
+  const input=document.getElementById("deviceNameInput");
+  const typed=input.value.trim();
 
-  const typed =
-    input.value.trim();
+  document.getElementById("deviceName").textContent=
+    typed||detectDeviceName();
 
-  document.getElementById(
-    "deviceName"
-  ).textContent =
-    typed || detectDeviceName();
+  const w=screen.width;
+  const h=screen.height;
+  const dpr=window.devicePixelRatio||1;
+  const touch=navigator.maxTouchPoints||0;
 
-  const w =
-    screen.width;
+  document.getElementById("screenInfo").textContent=
+    w+"×"+h+" • DPR "+dpr.toFixed(1)+" • Touch "+touch;
 
-  const h =
-    screen.height;
-
-  const dpr =
-    window.devicePixelRatio || 1;
-
-  const touch =
-    navigator.maxTouchPoints || 0;
-
-  document.getElementById(
-    "screenInfo"
-  ).textContent =
-    w+"×"+h+
-    " • DPR "+dpr.toFixed(1)+
-    " • Touch "+touch;
-
-  const deviceSelect =
-    document.getElementById("device");
+  const deviceSelect=document.getElementById("device");
 
   if(deviceSelect.value==="auto"){
-    deviceSelect.dataset.detected =
-      deviceClass();
+    deviceSelect.dataset.detected=deviceClass();
   }
 }
 
-
-/* =====================================================
-   DEVICE NAME ANALYSIS
-===================================================== */
-
 function analyzeDevice(){
 
-  const input =
-    document.getElementById(
-      "deviceNameInput"
-    ).value
-    .trim()
-    .toLowerCase();
+  const input=document.getElementById("deviceNameInput")
+    .value.trim().toLowerCase();
 
-  let type =
-    document.getElementById(
-      "device"
-    ).value;
+  let type=document.getElementById("device").value;
 
   if(type==="auto"){
-    type =
-      document.getElementById(
-        "device"
-      ).dataset.detected ||
-      deviceClass();
+    type=document.getElementById("device").dataset.detected||deviceClass();
   }
 
-  /*
-    Device-name keywords help adjust the
-    high-sensitivity profile without
-    pretending that every model has the
-    same touch hardware.
-  */
-
-  if(
-    /iphone|ipad/.test(input)
-  ){
+  if(/iphone|ipad/.test(input)){
     type="iphone";
   }
 
-  if(
-    /rog|redmagic|red magic|black shark|legion|gaming/.test(input)
-  ){
+  if(/rog|redmagic|red magic|black shark|legion|gaming/.test(input)){
     type="gaming";
   }
 
-  if(
-    /ultra|pro\+|pro plus|max|gt|neo|flagship/.test(input)
-  ){
-    if(type!=="iphone")
-      type="high";
+  if(/ultra|pro\+|pro plus|max|gt|neo|flagship/.test(input)){
+    if(type!=="iphone")type="high";
   }
 
-  if(
-    /spark|pova|hot|note|a[0-9]|c[0-9]/.test(input)
-  ){
-    if(type==="auto")
-      type="mid";
+  if(/spark|pova|hot|note|a[0-9]|c[0-9]/.test(input)){
+    if(type==="auto")type="mid";
   }
 
-  return {
-    name:
-      input
-      ? document.getElementById(
-          "deviceNameInput"
-        ).value.trim()
-      : detectDeviceName(),
-
+  return{
+    name:input
+      ?document.getElementById("deviceNameInput").value.trim()
+      :detectDeviceName(),
     type:type
   };
 }
 
+/*
+  FIXED HIGH-SENSITIVITY PROFILES.
+  Nothing here is random.
+*/
+const profiles={
 
-/* =====================================================
-   HIGH SENSITIVITY ENGINE
-===================================================== */
+  low:{
+    general:188,
+    red:184,
+    x2:178,
+    x4:164,
+    sniper:118,
+    free:158
+  },
+
+  mid:{
+    general:192,
+    red:188,
+    x2:182,
+    x4:168,
+    sniper:120,
+    free:162
+  },
+
+  high:{
+    general:195,
+    red:192,
+    x2:186,
+    x4:172,
+    sniper:122,
+    free:166
+  },
+
+  gaming:{
+    general:198,
+    red:195,
+    x2:190,
+    x4:176,
+    sniper:125,
+    free:170
+  },
+
+  iphone:{
+    general:193,
+    red:190,
+    x2:184,
+    x4:170,
+    sniper:120,
+    free:165
+  }
+};
+
+/*
+  These are fixed alternate profiles for REGENERATE.
+  They are still device-based and high sensitivity,
+  but regeneration does not simply repeat the first set.
+*/
+const alternateProfiles={
+
+  low:{
+    general:190,
+    red:186,
+    x2:180,
+    x4:166,
+    sniper:119,
+    free:160
+  },
+
+  mid:{
+    general:194,
+    red:190,
+    x2:184,
+    x4:170,
+    sniper:121,
+    free:164
+  },
+
+  high:{
+    general:197,
+    red:194,
+    x2:188,
+    x4:174,
+    sniper:123,
+    free:168
+  },
+
+  gaming:{
+    general:200,
+    red:197,
+    x2:192,
+    x4:178,
+    sniper:126,
+    free:172
+  },
+
+  iphone:{
+    general:195,
+    red:192,
+    x2:186,
+    x4:172,
+    sniper:121,
+    free:167
+  }
+};
+
+let generationMode=0;
 
 function generateNumbers(){
 
-  const device =
-    analyzeDevice();
+  const device=analyzeDevice();
 
   /*
-    These are intentionally high profiles,
-    not random numbers.
-
-    The ranges stay within the game's
-    sensitivity scale while keeping
-    enough separation between controls.
+    First generation = main optimized profile.
+    Regeneration = fixed alternate optimized profile.
   */
+  const base=
+    generationMode%2===0
+      ?profiles[device.type]||profiles.mid
+      :alternateProfiles[device.type]||alternateProfiles.mid;
 
-  const profiles = {
-
-    low:{
-      general:188,
-      red:184,
-      x2:178,
-      x4:164,
-      sniper:118,
-      free:158
-    },
-
-    mid:{
-      general:192,
-      red:188,
-      x2:182,
-      x4:168,
-      sniper:120,
-      free:162
-    },
-
-    high:{
-      general:195,
-      red:192,
-      x2:186,
-      x4:172,
-      sniper:122,
-      free:166
-    },
-
-    gaming:{
-      general:198,
-      red:195,
-      x2:190,
-      x4:176,
-      sniper:125,
-      free:170
-    },
-
-    iphone:{
-      general:193,
-      red:190,
-      x2:184,
-      x4:170,
-      sniper:120,
-      free:165
-    }
-
-  };
-
-  const base =
-    profiles[device.type] ||
-    profiles.mid;
-
-  let values = {
+  let values={
     "General":base.general,
     "Red Dot":base.red,
     "2x Scope":base.x2,
@@ -970,201 +422,144 @@ function generateNumbers(){
     "Free Look":base.free
   };
 
-
-  /* =================================================
-     PLAY STYLE TUNING
-  ================================================= */
-
-  const style =
-    document.getElementById(
-      "style"
-    ).value;
-
+  const style=document.getElementById("style").value;
 
   if(style==="ump"){
-
-    values["General"] += 2;
-    values["Red Dot"] += 2;
-    values["2x Scope"] += 2;
-
+    values["General"]+=2;
+    values["Red Dot"]+=2;
+    values["2x Scope"]+=2;
   }
-
 
   if(style==="oneTap"){
-
-    values["General"] += 1;
-    values["Red Dot"] += 3;
-    values["2x Scope"] += 2;
-
+    values["General"]+=1;
+    values["Red Dot"]+=3;
+    values["2x Scope"]+=2;
   }
-
 
   if(style==="shotgun"){
-
-    values["General"] += 2;
-    values["Red Dot"] += 2;
-    values["Free Look"] += 2;
-
+    values["General"]+=2;
+    values["Red Dot"]+=2;
+    values["Free Look"]+=2;
   }
-
 
   if(style==="drag"){
-
-    values["General"] += 2;
-    values["Red Dot"] += 2;
-    values["2x Scope"] += 1;
-    values["Free Look"] += 2;
-
+    values["General"]+=2;
+    values["Red Dot"]+=2;
+    values["2x Scope"]+=1;
+    values["Free Look"]+=2;
   }
 
+  Object.keys(values).forEach(function(key){
+    values[key]=Math.max(
+      80,
+      Math.min(200,Math.round(values[key]))
+    );
+  });
 
-  /*
-    Never exceed the high sensitivity limit.
-  */
-
-  Object.keys(values).forEach(
-    function(key){
-
-      values[key] =
-        Math.max(
-          80,
-          Math.min(
-            200,
-            Math.round(values[key])
-          )
-        );
-
-    }
-  );
-
-
-  return {
+  return{
     device:device,
     values:values
   };
 }
 
-
-/* =====================================================
-   RENDER RESULT
-===================================================== */
-
 function renderResult(){
 
-  const generated =
-    generateNumbers();
+  const generated=generateNumbers();
 
-  const output =
-    document.getElementById(
-      "results"
-    );
-
-  const info =
-    document.getElementById(
-      "profileInfo"
-    );
+  const output=document.getElementById("results");
+  const info=document.getElementById("profileInfo");
 
   output.innerHTML="";
 
-  info.innerHTML =
+  info.innerHTML=
     "<b>Device:</b> "+
     generated.device.name+
     "<br><b>Profile:</b> HIGH SENSITIVITY • "+
-    generated.device.type.toUpperCase();
+    generated.device.type.toUpperCase()+
+    "<br><b>Mode:</b> "+
+    (generationMode%2===0?"PRIMARY OPTIMIZED":"ALTERNATE OPTIMIZED");
 
-
-  Object.entries(
-    generated.values
-  ).forEach(
+  Object.entries(generated.values).forEach(
     function([name,value]){
 
-      const row =
-        document.createElement(
-          "div"
-        );
+      const row=document.createElement("div");
 
       row.className="row";
 
-      row.innerHTML =
+      row.innerHTML=
         "<span>"+name+"</span>"+
         "<div class='valueBox'>"+
-        "<span class='value'>"+
-        value+
-        "</span>"+
-        "<button class='copy' "+
-        "data-value='"+value+"' "+
-        "type='button'>COPY</button>"+
+        "<span class='value'>"+value+"</span>"+
+        "<button class='copy' data-value='"+value+"' type='button'>COPY</button>"+
         "</div>";
 
       output.appendChild(row);
     }
   );
 
-
-  document.querySelectorAll(
-    ".copy"
-  ).forEach(
+  document.querySelectorAll(".copy").forEach(
     function(btn){
 
-      btn.onclick =
-      async function(){
+      btn.onclick=async function(){
 
-        const value =
-          btn.dataset.value;
+        const value=btn.dataset.value;
 
         try{
-
-          await navigator.clipboard.writeText(
-            value
-          );
-
+          await navigator.clipboard.writeText(value);
           btn.textContent="COPIED";
 
-          setTimeout(
-            function(){
-              btn.textContent="COPY";
-            },
-            1000
-          );
+          setTimeout(function(){
+            btn.textContent="COPY";
+          },1000);
 
         }catch(error){
-
           btn.textContent="COPY";
         }
       };
     }
   );
 
+  document.getElementById("result").style.display="block";
 
-  document.getElementById(
-    "result"
-  ).style.display="block";
-
-  document.getElementById(
-    "result"
-  ).scrollIntoView({
+  document.getElementById("result").scrollIntoView({
     behavior:"smooth"
   });
 }
 
+async function verifyAccess(){
 
-/* =====================================================
-   GENERATE
-===================================================== */
+  const accessResponse=await fetch(
+    "/api/access",
+    {
+      credentials:"same-origin",
+      cache:"no-store"
+    }
+  );
+
+  if(!accessResponse.ok){
+    throw new Error("Access server error.");
+  }
+
+  const access=await accessResponse.json();
+
+  if(!access.allowed){
+    lockApp();
+
+    timer.textContent=
+      "Tap CONTINUE WITH TIKTOK to unlock.";
+
+    throw new Error("TikTok access required.");
+  }
+}
 
 async function generateSensitivity(){
 
-  const deviceInput =
-    document.getElementById(
-      "deviceNameInput"
-    ).value.trim();
+  const deviceInput=
+    document.getElementById("deviceNameInput")
+      .value.trim();
 
   if(!deviceInput){
-
-    showStatus(
-      "Type your device name first.",
-      "error"
-    );
+    showStatus("Type your device name first.","error");
 
     document.getElementById(
       "deviceNameInput"
@@ -1173,106 +568,57 @@ async function generateSensitivity(){
     return;
   }
 
+  showStatus("Checking TikTok access...");
 
-  showStatus(
-    "Checking TikTok access..."
-  );
-
-  document.getElementById(
-    "result"
-  ).style.display="none";
-
+  document.getElementById("result").style.display="none";
 
   try{
 
-    const accessResponse =
-      await fetch(
-        "/api/access",
-        {
-          credentials:"same-origin",
-          cache:"no-store"
-        }
+    await verifyAccess();
+
+    showStatus(
+      "AI analyzing device for high sensitivity..."
+    );
+
+    generationMode=0;
+
+    setTimeout(function(){
+
+      renderResult();
+
+      showStatus(
+        "High-sensitivity optimization complete.",
+        "success"
       );
 
+    },500);
 
-    if(!accessResponse.ok){
-      throw new Error(
-        "Access server error."
-      );
-    }
+  }catch(error){
 
+    console.error(error);
 
-    const access =
-      await accessResponse.json();
-
-
-    if(!access.allowed){
-
-      lockApp();
+    if(error.message==="TikTok access required."){
 
       showStatus(
         "Connect your TikTok account before generating sensitivity.",
         "error"
       );
 
-      timer.textContent =
-        "Tap CONTINUE WITH TIKTOK to unlock.";
+    }else{
 
-      return;
+      showStatus(
+        "Could not verify your TikTok account.",
+        "error"
+      );
     }
-
-
-    showStatus(
-      "AI analyzing device for high sensitivity..."
-    );
-
-
-    setTimeout(
-      function(){
-
-        renderResult();
-
-        showStatus(
-          "High-sensitivity optimization complete.",
-          "success"
-        );
-
-      },
-      500
-    );
-
-
-  }catch(error){
-
-    console.error(error);
-
-    showStatus(
-      "Could not verify your TikTok account.",
-      "error"
-    );
   }
 }
 
+async function regenerateSensitivity(){
 
-/* =====================================================
-   BUTTONS
-===================================================== */
-
-document.getElementById(
-  "generate"
-).onclick =
-generateSensitivity;
-
-
-document.getElementById(
-  "regenerate"
-).onclick =
-function(){
-
-  const deviceInput =
-    document.getElementById(
-      "deviceNameInput"
-    ).value.trim();
+  const deviceInput=
+    document.getElementById("deviceNameInput")
+      .value.trim();
 
   if(!deviceInput){
 
@@ -1289,77 +635,78 @@ function(){
   }
 
   showStatus(
-    "Regenerating high-sensitivity profile..."
+    "Checking TikTok access..."
   );
 
-  setTimeout(
-    function(){
+  try{
+
+    await verifyAccess();
+
+    generationMode++;
+
+    showStatus(
+      "Regenerating optimized high-sensitivity profile..."
+    );
+
+    setTimeout(function(){
 
       renderResult();
 
       showStatus(
-        "New optimized high-sensitivity profile generated.",
+        "New device-optimized profile generated.",
         "success"
       );
 
-    },
-    400
-  );
-};
+    },400);
 
+  }catch(error){
 
-/* =====================================================
-   DEVICE INPUT
-===================================================== */
+    console.error(error);
 
-document.getElementById(
-  "deviceNameInput"
-).addEventListener(
-  "input",
+    if(error.message==="TikTok access required."){
+
+      showStatus(
+        "Connect your TikTok account before regenerating sensitivity.",
+        "error"
+      );
+
+    }else{
+
+      showStatus(
+        "Could not verify your TikTok account.",
+        "error"
+      );
+    }
+  }
+}
+
+document.getElementById("generate").onclick=
+  generateSensitivity;
+
+document.getElementById("regenerate").onclick=
+  regenerateSensitivity;
+
+document.getElementById("deviceNameInput")
+  .addEventListener("input",function(){
+    detectDevice();
+  });
+
+document.getElementById("device").onchange=
   function(){
+
+    if(this.value!=="auto"){
+      this.dataset.detected=this.value;
+    }
 
     detectDevice();
-  }
-);
-
-
-/* =====================================================
-   DEVICE SELECT
-===================================================== */
-
-document.getElementById(
-  "device"
-).onchange =
-function(){
-
-  if(this.value!=="auto"){
-    this.dataset.detected =
-      this.value;
-  }
-
-  detectDevice();
-};
-
-
-/* =====================================================
-   START
-===================================================== */
+  };
 
 detectDevice();
-
 checkAuth();
 
+setInterval(function(){
+  checkAuth();
+},30000);
 
-/* Re-check login */
-
-setInterval(
-  function(){
-    checkAuth();
-  },
-  30000
-);
-
-</script>
-
-</body>
+</script></body>
 </html>
