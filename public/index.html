@@ -409,7 +409,7 @@ function generateNumbers(mode=0){
     Regeneration = fixed alternate optimized profile.
   */
   const base=
-    generationMode%2===0
+    mode%2===0
       ?profiles[device.type]||profiles.mid
       :alternateProfiles[device.type]||alternateProfiles.mid;
 
