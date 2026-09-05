@@ -297,168 +297,94 @@ function analyzeDevice(){
   FIXED HIGH-SENSITIVITY PROFILES.
   Nothing here is random.
 */
-const profiles={
-
-  low:{
-    general:188,
-    red:184,
-    x2:178,
-    x4:164,
-    sniper:118,
-    free:158
-  },
-
-  mid:{
-    general:192,
-    red:188,
-    x2:182,
-    x4:168,
-    sniper:120,
-    free:162
-  },
-
-  high:{
-    general:195,
-    red:192,
-    x2:186,
-    x4:172,
-    sniper:122,
-    free:166
-  },
-
-  gaming:{
-    general:198,
-    red:195,
-    x2:190,
-    x4:176,
-    sniper:125,
-    free:170
-  },
-
-  iphone:{
-    general:193,
-    red:190,
-    x2:184,
-    x4:170,
-    sniper:120,
-    free:165
-  }
-};
-
 /*
-  These are fixed alternate profiles for REGENERATE.
-  They are still device-based and high sensitivity,
-  but regeneration does not simply repeat the first set.
+ MOOD AI SENSITIVITY ENGINE
+ Deterministic device-aware generator.
+ No random numbers. No two-profile limit.
 */
-const alternateProfiles={
-
-  low:{
-    general:190,
-    red:186,
-    x2:180,
-    x4:166,
-    sniper:119,
-    free:160
-  },
-
-  mid:{
-    general:194,
-    red:190,
-    x2:184,
-    x4:170,
-    sniper:121,
-    free:164
-  },
-
-  high:{
-    general:197,
-    red:194,
-    x2:188,
-    x4:174,
-    sniper:123,
-    free:168
-  },
-
-  gaming:{
-    general:200,
-    red:197,
-    x2:192,
-    x4:178,
-    sniper:126,
-    free:172
-  },
-
-  iphone:{
-    general:195,
-    red:192,
-    x2:186,
-    x4:172,
-    sniper:121,
-    free:167
-  }
-};
-
 let generationMode=0;
 
-function generateNumbers(mode=0){
+function hashText(text){
+  let h=2166136261;
+  for(let i=0;i<text.length;i++){
+    h^=text.charCodeAt(i);
+    h=Math.imul(h,16777619);
+  }
+  return h>>>0;
+}
 
+function calc(seed,min,max){
+  return min+(seed%(max-min+1));
+}
+
+function generateNumbers(mode=0){
   const device=analyzeDevice();
+  const style=document.getElementById("style").value;
+  const input=document.getElementById("deviceNameInput").value.trim().toLowerCase();
+
+  const cores=navigator.hardwareConcurrency||4;
+  const ram=navigator.deviceMemory||4;
+  const width=screen.width||360;
+  const height=screen.height||800;
+  const dpr=window.devicePixelRatio||1;
+  const touch=navigator.maxTouchPoints||5;
+
+  const identity=input+"|"+device.type+"|"+cores+"|"+ram+"|"+width+"|"+height+"|"+dpr+"|"+touch;
+  const baseSeed=hashText(identity);
 
   /*
-    First generation = main optimized profile.
-    Regeneration = fixed alternate optimized profile.
+   Every generation gets a new deterministic seed.
+   Same device + same settings = reproducible.
+   Different generation = different calculated profile.
   */
-  const base=
-    mode%2===0
-      ?profiles[device.type]||profiles.mid
-      :alternateProfiles[device.type]||alternateProfiles.mid;
+  const seed=(baseSeed+Math.imul(mode,2654435761))>>>0;
 
-  let values={
-    "General":base.general,
-    "Red Dot":base.red,
-    "2x Scope":base.x2,
-    "4x Scope":base.x4,
-    "Sniper Scope":base.sniper,
-    "Free Look":base.free
+  const performance={
+    low:0,
+    mid:3,
+    high:6,
+    gaming:9,
+    iphone:5
+  }[device.type]||3;
+
+  const hardware=Math.min(5,Math.floor((cores+ram)/4));
+  const screenBonus=width>=1080?3:(width>=720?2:1);
+  const touchBonus=Math.min(4,Math.floor(touch/2));
+
+  const general=Math.min(200,188+performance+hardware+screenBonus+touchBonus+calc(seed,0,8));
+
+  const values={
+    "General":general,
+    "Red Dot":Math.min(200,general-2+calc(seed>>>3,0,6)),
+    "2x Scope":Math.min(200,general-8+calc(seed>>>6,0,8)),
+    "4x Scope":Math.min(200,general-20+calc(seed>>>9,0,10)),
+    "Sniper Scope":Math.min(200,116+performance+calc(seed>>>12,0,8)),
+    "Free Look":Math.min(200,general-30+calc(seed>>>15,0,10))
   };
 
-  const style=document.getElementById("style").value;
+  const adjustments={
+    balanced:{g:0,r:0,x2:0,x4:0,s:0,f:0},
+    ump:{g:3,r:4,x2:3,x4:1,s:0,f:2},
+    oneTap:{g:1,r:5,x2:4,x4:2,s:0,f:1},
+    shotgun:{g:5,r:3,x2:2,x4:0,s:0,f:3},
+    drag:{g:4,r:4,x2:3,x4:1,s:0,f:4}
+  }[style]||{g:0,r:0,x2:0,x4:0,s:0,f:0};
 
-  if(style==="ump"){
-    values["General"]+=2;
-    values["Red Dot"]+=2;
-    values["2x Scope"]+=2;
-  }
+  values["General"]+=adjustments.g;
+  values["Red Dot"]+=adjustments.r;
+  values["2x Scope"]+=adjustments.x2;
+  values["4x Scope"]+=adjustments.x4;
+  values["Sniper Scope"]+=adjustments.s;
+  values["Free Look"]+=adjustments.f;
 
-  if(style==="oneTap"){
-    values["General"]+=1;
-    values["Red Dot"]+=3;
-    values["2x Scope"]+=2;
-  }
-
-  if(style==="shotgun"){
-    values["General"]+=2;
-    values["Red Dot"]+=2;
-    values["Free Look"]+=2;
-  }
-
-  if(style==="drag"){
-    values["General"]+=2;
-    values["Red Dot"]+=2;
-    values["2x Scope"]+=1;
-    values["Free Look"]+=2;
-  }
-
-  Object.keys(values).forEach(function(key){
-    values[key]=Math.max(
-      80,
-      Math.min(200,Math.round(values[key]))
-    );
+  Object.keys(values).forEach(k=>{
+    values[k]=Math.max(80,Math.min(200,Math.round(values[k])));
   });
 
   return{
     device:device,
-    values:values
+    values:values,
+    generation:mode+1
   };
 }
 
@@ -477,7 +403,7 @@ function renderResult(mode=0){
     "<br><b>Profile:</b> HIGH SENSITIVITY • "+
     generated.device.type.toUpperCase()+
     "<br><b>Mode:</b> "+
-    (generationMode%2===0?"PRIMARY OPTIMIZED":"ALTERNATE OPTIMIZED");
+    "AI CALCULATED • GENERATION "+generated.generation;
 
   Object.entries(generated.values).forEach(
     function([name,value]){
